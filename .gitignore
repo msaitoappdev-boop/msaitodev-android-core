@@ -1,17 +1,37 @@
-gitignore
-/build
-.gradle
-.idea
+# Gradle files
+.gradle/
+build/
+**/build/
+
+# Android Studio files
+.idea/
 *.iml
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+*.ipr
+*.iws
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# Local configuration files
+local.properties
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build output
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+
+# Kotlin
+*.kotlin_control
+*.kotlin_module
