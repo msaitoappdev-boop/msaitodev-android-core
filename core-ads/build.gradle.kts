@@ -52,7 +52,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-ads"
-                version = "1.0.1"
+                version = "1.0.2"
                 from(components["release"])
             }
         }

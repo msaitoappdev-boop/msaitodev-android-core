@@ -33,7 +33,8 @@ class RewardedHelper @Inject constructor(
     private val adUnits: AdUnits,
     private val repository: RewardedAdRepository
 ) {
-    private val scope = CoroutineScope(Dispatchers.IO)
+    // 💡 Dispatchers.Main.immediate に変更し、UIスレッドでの実行を保証する
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
     private var ad: RewardedAd? = null
     private var isSideloading = false
     private var retryAttempt = 0
@@ -72,6 +73,7 @@ class RewardedHelper @Inject constructor(
         val req = AdRequest.Builder().build()
         val unitId = adUnits.rewardedUnitA
 
+        // 💡 確実にメインスレッドで load を呼び出す
         RewardedAd.load(context, unitId, req, object : RewardedAdLoadCallback() {
             override fun onAdLoaded(p0: RewardedAd) {
                 ad = p0
@@ -92,7 +94,7 @@ class RewardedHelper @Inject constructor(
                 
                 scope.launch {
                     delay(delayTime)
-                    preload()
+                    preload() // scope が Main なので、再試行もメインスレッドで行われる
                 }
             }
         })

@@ -33,7 +33,8 @@ class InterstitialHelper @Inject constructor(
     private val adUnits: AdUnits,
     private val repository: InterstitialAdRepository
 ) {
-    private val scope = CoroutineScope(Dispatchers.IO)
+    // 💡 Dispatchers.Main.immediate に変更し、UIスレッドでの実行を保証する
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
     private var ad: InterstitialAd? = null
     private var isSideloading = false
     private var retryAttempt = 0
@@ -71,6 +72,8 @@ class InterstitialHelper @Inject constructor(
         isSideloading = true
         val req = AdRequest.Builder().build()
         val unitId = adUnits.interstitialUnitA
+
+        // 💡 確実にメインスレッドで load を呼び出す
         InterstitialAd.load(context, unitId, req, object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(p0: InterstitialAd) {
                 ad = p0
@@ -91,7 +94,7 @@ class InterstitialHelper @Inject constructor(
                 
                 scope.launch {
                     delay(delayTime)
-                    preload()
+                    preload() // 再試行もメインスレッドで行われる
                 }
             }
         })
