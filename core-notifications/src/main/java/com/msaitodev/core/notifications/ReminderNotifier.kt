@@ -4,11 +4,13 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,6 +20,7 @@ class ReminderNotifier @Inject constructor(
 ) {
     companion object {
         private const val NOTIFICATION_ID = 1001
+        private const val METADATA_DEFAULT_COLOR = "com.google.firebase.messaging.default_notification_color"
     }
 
     /**
@@ -50,10 +53,44 @@ class ReminderNotifier @Inject constructor(
             .setContentIntent(contentPI)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
+        // Manifest のメタデータから通知色を取得して適用
+        getNotificationColorFromManifest(context)?.let { color ->
+            builder.setColor(color)
+        }
+
         try {
             NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
         } catch (e: SecurityException) {
             // Permission missing at runtime
+        }
+    }
+
+    /**
+     * AndroidManifest.xml のメタデータから通知用の色を取得します。
+     */
+    private fun getNotificationColorFromManifest(context: Context): Int? {
+        return try {
+            val appInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.packageManager.getApplicationInfo(
+                    context.packageName,
+                    PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA.toLong())
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getApplicationInfo(
+                    context.packageName,
+                    PackageManager.GET_META_DATA
+                )
+            }
+
+            val colorResId = appInfo.metaData?.getInt(METADATA_DEFAULT_COLOR, 0) ?: 0
+            if (colorResId != 0) {
+                ContextCompat.getColor(context, colorResId)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 }

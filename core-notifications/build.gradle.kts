@@ -49,7 +49,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-notifications"
-                version = "1.0.0"
+                version = "1.0.1"
                 from(components["release"])
             }
         }
@@ -59,7 +59,7 @@ afterEvaluate {
 dependencies {
     // 汎用コアおよびクイズドメインを Maven 形式で参照
     implementation("com.msaitodev.core:core-common:1.0.0")
-    implementation("com.msaitodev.quiz:quiz-core-domain:1.0.0")
+    implementation("com.msaitodev.quiz:quiz-core-domain:1.1.1")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
