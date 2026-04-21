@@ -55,7 +55,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.feature"
                 artifactId = "feature-billing"
-                version = "1.0.0"
+                version = "1.0.1"
                 from(components["release"])
             }
         }

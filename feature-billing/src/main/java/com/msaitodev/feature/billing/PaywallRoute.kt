@@ -11,6 +11,7 @@ import com.msaitodev.core.common.util.findActivity
 
 @Composable
 fun PaywallRoute(
+    onBackClick: () -> Unit,
     viewModel: PremiumViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -33,5 +34,6 @@ fun PaywallRoute(
                 viewModel.onPurchaseClick(activity)
             }
         },
+        onBackClick = onBackClick
     )
 }

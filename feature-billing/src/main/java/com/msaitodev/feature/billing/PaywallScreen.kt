@@ -1,6 +1,8 @@
 package com.msaitodev.feature.billing
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,14 +16,23 @@ private const val BENEFIT_LINE_BREAK = "\n"
 @Composable
 fun PaywallScreen(
     uiState: PaywallUiState,
-    onPurchaseClick: () -> Unit
+    onPurchaseClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val config = uiState.config ?: return
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(config.title) }
+                title = { Text(config.title) },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
             )
         }
     ) { inner ->
