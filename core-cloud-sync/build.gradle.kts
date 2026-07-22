@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.msaitodev.core.cloudsync"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -45,7 +45,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-cloud-sync"
-                version = "1.1.1"
+                version = "1.1.2"
                 from(components["release"])
             }
         }
@@ -53,9 +53,9 @@ afterEvaluate {
 }
 
 dependencies {
-    // 汎用コアおよびクイズドメインを Maven 形式で参照
-    implementation("com.msaitodev.core:core-common:1.0.0")
-    implementation("com.msaitodev.quiz:quiz-core-domain:1.0.0")
+    // core-common 1.0.1 を参照
+    implementation("com.msaitodev.core:core-common:1.0.1")
+    implementation("com.msaitodev.quiz:quiz-core-domain:1.1.1")
 
     // Firebase
     val fbBom = platform("com.google.firebase:firebase-bom:32.7.4")
@@ -65,7 +65,7 @@ dependencies {
     implementation("com.google.firebase:firebase-config-ktx")
 
     // Hilt (KSP)
-    val hiltVersion = "2.51.1"
+    val hiltVersion = "2.55"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
 

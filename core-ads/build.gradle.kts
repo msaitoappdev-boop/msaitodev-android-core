@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.msaitodev.core.ads"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -52,7 +52,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-ads"
-                version = "1.0.2"
+                version = "1.0.3"
                 from(components["release"])
             }
         }
@@ -60,8 +60,8 @@ afterEvaluate {
 }
 
 dependencies {
-    // ローカルMavenインストール済みのcore-commonを参照
-    implementation("com.msaitodev.core:core-common:1.0.0")
+    // core-common 1.0.1 を参照
+    implementation("com.msaitodev.core:core-common:1.0.1")
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-ktx:1.9.0")
@@ -69,7 +69,7 @@ dependencies {
     implementation("com.google.android.ump:user-messaging-platform:2.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
-    val hiltVersion = "2.51.1"
+    val hiltVersion = "2.55"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
 }

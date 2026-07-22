@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.msaitodev.core.navigation"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -47,7 +47,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-navigation"
-                version = "1.0.0"
+                version = "1.0.1"
                 from(components["release"])
             }
         }

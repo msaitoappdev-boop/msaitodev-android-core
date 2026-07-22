@@ -6,11 +6,12 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("maven-publish")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
     namespace = "com.msaitodev.feature.billing"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -38,9 +39,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
 
     publishing {
         singleVariant("release") {
@@ -55,7 +53,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.feature"
                 artifactId = "feature-billing"
-                version = "1.0.1"
+                version = "1.0.2"
                 from(components["release"])
             }
         }
@@ -64,9 +62,9 @@ afterEvaluate {
 
 dependencies {
     // 全てのコアライブラリを Maven 形式で参照
-    implementation("com.msaitodev.core:core-common:1.0.0")
+    implementation("com.msaitodev.core:core-common:1.0.1")
     implementation("com.msaitodev.core:core-navigation:1.0.0")
-    implementation("com.msaitodev.quiz:quiz-core-domain:1.0.0")
+    implementation("com.msaitodev.quiz:quiz-core-domain:1.1.1")
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -85,7 +83,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.4")
 
     // Hilt (KSP)
-    val hiltVersion = "2.51.1"
+    val hiltVersion = "2.55"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -99,7 +97,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
 
     // Billing
-    implementation("com.android.billingclient:billing-ktx:7.1.1")
+    implementation("com.android.billingclient:billing-ktx:8.0.0")
 
     // Unit Testing
     testImplementation("junit:junit:4.13.2")

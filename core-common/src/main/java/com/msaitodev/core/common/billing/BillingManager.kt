@@ -113,8 +113,9 @@ class BillingManager @Inject constructor(
             ).build()
 
         return suspendCancellableCoroutine { cont ->
-            client.queryProductDetailsAsync(params) { result: BillingResult, list: MutableList<ProductDetails> ->
-                if (result.responseCode == BillingClient.BillingResponseCode.OK && list.isNotEmpty()) {
+            client.queryProductDetailsAsync(params) { result, productDetailsResult ->
+                val list = productDetailsResult.productDetailsList
+                if (result.responseCode == BillingClient.BillingResponseCode.OK && !list.isNullOrEmpty()) {
                     val details = list.first()
                     cachedProductDetails = details
                     cont.resume(details)

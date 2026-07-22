@@ -4,13 +4,13 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp") // KSP導入
+    id("com.google.devtools.ksp")
     id("maven-publish")
 }
 
 android {
     namespace = "com.msaitodev.core.notifications"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -49,7 +49,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-notifications"
-                version = "1.0.1"
+                version = "1.0.2"
                 from(components["release"])
             }
         }
@@ -57,8 +57,8 @@ afterEvaluate {
 }
 
 dependencies {
-    // 汎用コアおよびクイズドメインを Maven 形式で参照
-    implementation("com.msaitodev.core:core-common:1.0.0")
+    // core-common 1.0.1 を参照
+    implementation("com.msaitodev.core:core-common:1.0.1")
     implementation("com.msaitodev.quiz:quiz-core-domain:1.1.1")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
@@ -70,7 +70,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // Hilt (KSPへ移行)
-    val hiltVersion = "2.51.1"
+    val hiltVersion = "2.55"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-work:1.2.0")
