@@ -52,7 +52,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-ads"
-                version = "1.0.3"
+                version = "1.1.0"
                 from(components["release"])
             }
         }
@@ -60,8 +60,8 @@ afterEvaluate {
 }
 
 dependencies {
-    // core-common 1.0.1 を参照
-    implementation("com.msaitodev.core:core-common:1.0.1")
+    // core-common を 1.1.0 に更新
+    implementation("com.msaitodev.core:core-common:1.1.0")
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-ktx:1.9.0")

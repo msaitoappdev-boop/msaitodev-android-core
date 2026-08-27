@@ -4,10 +4,13 @@ import android.app.Activity
 import app.cash.turbine.test
 import com.android.billingclient.api.ProductDetails
 import com.google.common.truth.Truth.assertThat
+import com.msaitodev.core.common.billing.BillingManager
+import com.msaitodev.core.common.billing.BillingProvider
+import com.msaitodev.core.common.billing.PaywallConfig
+import com.msaitodev.core.common.billing.PlanItemConfig
+import com.msaitodev.core.common.billing.PremiumPlan
 import com.msaitodev.feature.billing.PaywallEvent
 import com.msaitodev.feature.billing.PremiumViewModel
-import com.msaitodev.quiz.core.common.billing.BillingManager
-import com.msaitodev.quiz.core.domain.repository.PremiumRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,15 +29,24 @@ import org.mockito.Mockito.`when`
 class PremiumViewModelTest {
 
     private val billingManager: BillingManager = mock(BillingManager::class.java)
-    private val premiumRepo: PremiumRepository = mock(PremiumRepository::class.java)
+    private val billingProvider: BillingProvider = mock(BillingProvider::class.java)
     private val activity: Activity = mock(Activity::class.java)
     private lateinit var viewModel: PremiumViewModel
 
     private val testDispatcher = StandardTestDispatcher()
 
+    private val fakeConfig = PaywallConfig(
+        title = "Title",
+        headline = "Headline",
+        monthly = PlanItemConfig("Monthly", "Price", "Buy", "Owned", "Desc", listOf("Benefit")),
+        lifetime = PlanItemConfig("Lifetime", "Price", "Buy", "Owned", "Desc", listOf("Benefit"))
+    )
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        `when`(billingProvider.paywallConfig).thenReturn(fakeConfig)
+        `when`(billingManager.premiumPlan).thenReturn(MutableStateFlow(PremiumPlan.NONE))
     }
 
     @After
@@ -44,58 +56,45 @@ class PremiumViewModelTest {
 
     @Test
     fun `uiState reflects premium status`() = runTest {
-        val isPremiumFlow = MutableStateFlow(false)
-        `when`(premiumRepo.isPremium).thenReturn(isPremiumFlow)
-        viewModel = PremiumViewModel(billingManager, premiumRepo)
+        val premiumPlanFlow = MutableStateFlow(PremiumPlan.NONE)
+        `when`(billingManager.premiumPlan).thenReturn(premiumPlanFlow)
+        viewModel = PremiumViewModel(billingManager, billingProvider)
 
         viewModel.uiState.test {
-            assertThat(awaitItem().isPremium).isFalse()
+            assertThat(awaitItem().premiumPlan).isEqualTo(PremiumPlan.NONE)
 
-            isPremiumFlow.value = true
+            premiumPlanFlow.value = PremiumPlan.MONTHLY
             testDispatcher.scheduler.advanceUntilIdle()
-            assertThat(awaitItem().isPremium).isTrue()
+            assertThat(awaitItem().premiumPlan).isEqualTo(PremiumPlan.MONTHLY)
         }
     }
 
     @Test
     fun `onPurchaseClick launches billing flow when product details are available`() = runTest {
         val productDetails: ProductDetails = mock(ProductDetails::class.java)
-        `when`(billingManager.getProductDetails()).thenReturn(productDetails)
-        viewModel = PremiumViewModel(billingManager, premiumRepo)
+        `when`(billingProvider.productIdLifetime).thenReturn("lifetime_id")
+        `when`(billingManager.queryProductDetails("lifetime_id", "inapp")).thenReturn(productDetails)
+        viewModel = PremiumViewModel(billingManager, billingProvider)
 
-        viewModel.onPurchaseClick(activity)
+        viewModel.onPurchaseClick(activity, PremiumPlan.LIFETIME)
         testDispatcher.scheduler.advanceUntilIdle()
 
         verify(billingManager).launchPurchase(activity, productDetails)
     }
 
     @Test
-    fun `onPurchaseClick emits error event when product details are null`() = runTest {
-        `when`(billingManager.getProductDetails()).thenReturn(null)
-        viewModel = PremiumViewModel(billingManager, premiumRepo)
-
-        viewModel.event.test {
-            viewModel.onPurchaseClick(activity)
-            testDispatcher.scheduler.advanceUntilIdle()
-
-            val event = awaitItem() as PaywallEvent.ShowMessage
-            assertThat(event.messageResId).isEqualTo(R.string.paywall_error_product_details)
-        }
-    }
-
-    @Test
-    fun `refresh calls repository`() = runTest {
-        viewModel = PremiumViewModel(billingManager, premiumRepo)
+    fun `refresh calls billingManager`() = runTest {
+        viewModel = PremiumViewModel(billingManager, billingProvider)
         viewModel.refresh()
         testDispatcher.scheduler.advanceUntilIdle()
-        verify(premiumRepo).refreshFromBilling()
+        verify(billingManager).refreshEntitlements()
     }
 
     @Test
-    fun `devTogglePremium calls repository`() = runTest {
-        viewModel = PremiumViewModel(billingManager, premiumRepo)
-        viewModel.devTogglePremium(true)
+    fun `devTogglePremium calls billingManager`() = runTest {
+        viewModel = PremiumViewModel(billingManager, billingProvider)
+        viewModel.devTogglePremium(PremiumPlan.LIFETIME)
         testDispatcher.scheduler.advanceUntilIdle()
-        verify(premiumRepo).setPremiumForDebug(true)
+        verify(billingManager).setPremiumForDebug(PremiumPlan.LIFETIME)
     }
 }

@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.msaitodev.core.common.billing.PremiumPlan
 import com.msaitodev.feature.settings.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -183,10 +184,10 @@ internal fun SettingsScreen(
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Text(
-                            text = if (state.isPremium) {
-                                stringResource(R.string.settings_premium_status_active)
-                            } else {
-                                stringResource(R.string.settings_premium_status_free)
+                            text = when (state.premiumPlan) {
+                                PremiumPlan.LIFETIME -> "無制限プラン（適用中）"
+                                PremiumPlan.MONTHLY -> "月額プラン（適用中）"
+                                PremiumPlan.NONE -> stringResource(R.string.settings_premium_status_free)
                             },
                             style = MaterialTheme.typography.titleSmall,
                             color = if (state.isPremium) {

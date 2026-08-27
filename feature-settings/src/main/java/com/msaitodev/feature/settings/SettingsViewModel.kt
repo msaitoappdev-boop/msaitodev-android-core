@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.msaitodev.core.notifications.ReminderPrefs
 import com.msaitodev.core.notifications.ReminderRepository
 import com.msaitodev.core.common.billing.BillingManager
+import com.msaitodev.core.common.billing.PremiumPlan
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,12 +22,14 @@ data class SettingsUiState(
     val reminderEnabled: Boolean = ReminderPrefs.DEFAULT_ENABLED,
     val hour: Int = ReminderPrefs.DEFAULT_HOUR,
     val minute: Int = ReminderPrefs.DEFAULT_MINUTE,
-    val isPremium: Boolean = false,
+    val premiumPlan: PremiumPlan = PremiumPlan.NONE,
     val isWeaknessMode: Boolean = false,
     val weaknessCategoryName: String? = null,
     val weaknessModeTitle: String = "",
     val weaknessModeDescription: String = ""
-)
+) {
+    val isPremium: Boolean get() = premiumPlan != PremiumPlan.NONE
+}
 
 sealed interface SettingsEvent {
     /** 復元処理の結果ステータス */
@@ -62,15 +65,15 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 reminderRepository.reminderConfig,
-                billingManager.isPremium,
+                billingManager.premiumPlan,
                 settingsProvider.isWeaknessMode,
                 settingsProvider.weaknessCategoryName
-            ) { config, isPremium, isWeaknessMode, weaknessCategoryName ->
+            ) { config, premiumPlan, isWeaknessMode, weaknessCategoryName ->
                 SettingsUiState(
                     reminderEnabled = config.enabled,
                     hour = config.hour,
                     minute = config.minute,
-                    isPremium = isPremium,
+                    premiumPlan = premiumPlan,
                     isWeaknessMode = isWeaknessMode,
                     weaknessCategoryName = weaknessCategoryName,
                     weaknessModeTitle = settingsProvider.weaknessModeTitle,

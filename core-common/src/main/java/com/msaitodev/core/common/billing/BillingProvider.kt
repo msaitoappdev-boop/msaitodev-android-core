@@ -5,7 +5,19 @@ package com.msaitodev.core.common.billing
  * 各アプリ（Hub）はこのインターフェースを実装し、DI経由で提供する。
  */
 interface BillingProvider {
-    val productIdPremium: String
+    /**
+     * 月額プランのプロダクトID (SUBS)
+     */
+    val productIdMonthly: String
+
+    /**
+     * 全問解放プランのプロダクトID (INAPP)
+     */
+    val productIdLifetime: String
+
+    /**
+     * サブスクリプションのベースプランID
+     */
     val basePlanId: String
     
     /**
