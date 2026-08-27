@@ -45,7 +45,7 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 groupId = "com.msaitodev.core"
                 artifactId = "core-common"
-                version = "1.0.1"
+                version = "1.1.0"
                 from(components["release"])
             }
         }
@@ -57,6 +57,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.4")
     api("androidx.datastore:datastore-preferences:1.1.1")
     api("com.android.billingclient:billing-ktx:8.0.0")
+
+    // Process Lifecycle監視用
+    implementation("androidx.lifecycle:lifecycle-process:2.8.6")
 
     val hiltVersion = "2.55"
     implementation("com.google.dagger:hilt-android:$hiltVersion")

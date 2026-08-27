@@ -8,5 +8,6 @@ object BillingConfig {
     // 端末ローカルの保存キー（これは全アプリ共通で良い）
     const val PREFS_NAME = "billing_entitlements"
     const val KEY_IS_PREMIUM = "is_premium"
+    const val KEY_PREMIUM_PLAN = "premium_plan"
     const val KEY_LAST_REFRESH_EPOCH_MS = "last_refresh_epoch_ms"
 }

@@ -29,9 +29,9 @@ fun PaywallRoute(
 
     PaywallScreen(
         uiState = uiState,
-        onPurchaseClick = {
+        onPurchaseClick = { plan ->
             context.findActivity()?.let { activity ->
-                viewModel.onPurchaseClick(activity)
+                viewModel.onPurchaseClick(activity, plan)
             }
         },
         onBackClick = onBackClick
